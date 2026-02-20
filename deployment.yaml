@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        # 1. Mount the volume into the specific folder NGINX uses for HTML
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      # 2. Define the volume by pointing it to our ConfigMap
+      volumes:
+      - name: html-volume
+        configMap:
+          name: custom-website
